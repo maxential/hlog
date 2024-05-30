@@ -26,7 +26,7 @@ namespace hlog
         Main logging function
     */
 
-    void log_impl(int warning_level, const char* format, va_list args)
+    inline void log_impl(int warning_level, const char* format, va_list args)
     {
 
         // Print the warning level and set the color
@@ -61,7 +61,7 @@ namespace hlog
     */
 
     // Variadic log function with warning level
-    void log(const char* format, ...)
+    inline void log(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
@@ -70,7 +70,7 @@ namespace hlog
     }
 
     // Variadic log function with custom warning level
-    void log(int warning_level, const char* format, ...)
+    inline void log(int warning_level, const char* format, ...)
     {
         va_list args;
         va_start(args, format);
