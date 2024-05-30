@@ -2,6 +2,10 @@
 #include <cstdarg>
 #include <cstdio>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 namespace hlog
 {
     /*
@@ -28,7 +32,15 @@ namespace hlog
 
     inline void log_impl(int warning_level, const char* format, va_list args)
     {
-
+#ifdef _WIN32
+        // Enable ANSI escape codes in Windows Command Prompt
+        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        DWORD mode = 0;
+        if (hConsole == INVALID_HANDLE_VALUE || !GetConsoleMode(hConsole, &mode)) {
+            return;
+        }
+        SetConsoleMode(hConsole, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+#endif
         // Print the warning level and set the color
         switch (warning_level)
         {
