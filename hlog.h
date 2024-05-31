@@ -45,19 +45,19 @@ namespace hlog
         switch (warning_level)
         {
         case WARNING_NONE:
-            printf("%s[HLOG] ", COLOR_NONE);
+            printf("%s[HLOG]     ", COLOR_NONE);
             break;
         case WARNING_SUCCESS:
-            printf("%s[SUCCESS] ", COLOR_SUCCESS);
+            printf("%s[SUCCESS] %s ", COLOR_SUCCESS, COLOR_NONE);
             break;
         case WARNING_ERROR:
-            printf("%s[ERROR] ", COLOR_ERROR);
+            printf("%s[ERROR] %s   ", COLOR_ERROR, COLOR_NONE);
             break;
         case WARNING_CRITICAL:
-            printf("%s[CRITICAL] ", COLOR_CRITICAL);
+            printf("%s[CRITICAL] %s", COLOR_CRITICAL, COLOR_NONE);
             break;
         default:
-            printf("%s[UNKNOWN] ", COLOR_NONE);
+            printf("%s[UNKNOWN]    ", COLOR_NONE);
             break;
         }
 
