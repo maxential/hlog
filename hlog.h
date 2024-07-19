@@ -35,8 +35,8 @@ namespace hlog
     */
 
     inline std::string get_log_filename();
-    inline void log(const char* format, ...);
-    inline void log(int warning_level, const char* format, ...);
+   // inline void log(const char* format, ...);
+    inline void log(const char* file, const char* line, int warning_level, const char* format, ...);
     inline std::string get_short_filename(const char* filepath);
 
     std::ofstream log_file;
@@ -49,6 +49,16 @@ namespace hlog
             return 1;
         }
         return 0;
+    }
+
+    // Function to get short filename (without path)
+    inline std::string get_short_filename(const char* filepath) {
+        std::string fullpath(filepath);
+        size_t found = fullpath.find_last_of("/\\");
+        if (found != std::string::npos) {
+            return fullpath.substr(found + 1);
+        }
+        return fullpath;
     }
 
     inline std::string get_log_filename() {
@@ -74,7 +84,7 @@ namespace hlog
         Main logging function
     */
 
-    inline void log_impl(int warning_level, const char* format, va_list args)
+    inline void log_impl(const char* file, const char* line, int warning_level, const char* format, va_list args)
     {
 #ifdef _WIN32
         // Enable ANSI escape codes in Windows Command Prompt
@@ -145,32 +155,26 @@ namespace hlog
     */
 
     // Variadic log function with warning level
-    inline void log(const char* format, ...)
-    {
-        va_list args;
-        va_start(args, format);
-        log_impl(WARNING_NONE, format, args);
-        va_end(args);
-    }
+    //inline void log(const char* format, ...)
+    //{
+    //    va_list args;
+    //    va_start(args, format);
+    //    log_impl(WARNING_NONE, format, args);
+    //    va_end(args);
+    //}
 
     // Variadic log function with custom warning level
-    inline void log(int warning_level, const char* format, ...)
+    inline void log(const char* file, const char* line,int warning_level, const char* format, ...)
     {
         va_list args;
         va_start(args, format);
-        log_impl(warning_level, format, args);
+        log_impl(file,line,warning_level, format, args);
         va_end(args);
-    }
-
-    // Function to get short filename (without path)
-    inline std::string get_short_filename(const char* filepath) {
-        std::string fullpath(filepath);
-        size_t found = fullpath.find_last_of("/\\");
-        if (found != std::string::npos) {
-            return fullpath.substr(found + 1);
-        }
-        return fullpath;
     }
 
 }
 
+#define HLOG(...) hlog::log(__FILE__,__LINE__,hlog::WARNING_NONE, __VA_ARGS__)
+#define HLOG_SUCCESS(...) hlog::log(__FILE__,__LINE__,hlog::WARNING_SUCCESS, __VA_ARGS__)
+#define HLOG_ERROR(...) hlog::log(__FILE__,__LINE__,hlog::WARNING_ERROR, __VA_ARGS__)
+#define HLOG_CRITICAL(...) hlog::log(__FILE__,__LINE__,hlog::WARNING_CRITICAL, __VA_ARGS__)
