@@ -35,8 +35,7 @@ namespace hlog
     */
 
     inline std::string get_log_filename();
-   // inline void log(const char* format, ...);
-    inline void log(const char* file, const char* line, int warning_level, const char* format, ...);
+    inline void log(const char* file, int line, int warning_level, const char* format, ...);
     inline std::string get_short_filename(const char* filepath);
 
     std::ofstream log_file;
@@ -45,7 +44,7 @@ namespace hlog
         std::string filename = get_log_filename();
         log_file.open(filename);
         if (!log_file.is_open()) {
-            log(WARNING_CRITICAL, "Failed to initialize hlog");
+            log(__FILE__,__LINE__,WARNING_CRITICAL, "Failed to initialize hlog");
             return 1;
         }
         return 0;
@@ -84,7 +83,7 @@ namespace hlog
         Main logging function
     */
 
-    inline void log_impl(const char* file, const char* line, int warning_level, const char* format, va_list args)
+    inline void log_impl(const char* file, int line, int warning_level, const char* format, va_list args)
     {
 #ifdef _WIN32
         // Enable ANSI escape codes in Windows Command Prompt
@@ -116,7 +115,7 @@ namespace hlog
             break;
         }
 
-        printf("%s (%s %d)%s ",COLOR_DARK, get_short_filename(__FILE__).c_str(), __LINE__,COLOR_NONE);
+        printf("%s (%s %d)%s ",COLOR_DARK, get_short_filename(file).c_str(), line,COLOR_NONE);
         // Print to file
         if (hlog::log_file.is_open()) {
             switch (warning_level)
@@ -149,22 +148,8 @@ namespace hlog
 
         printf("%s\n", COLOR_DEFAULT);
     }
-
-    /*
-        Function overload for laziness
-    */
-
-    // Variadic log function with warning level
-    //inline void log(const char* format, ...)
-    //{
-    //    va_list args;
-    //    va_start(args, format);
-    //    log_impl(WARNING_NONE, format, args);
-    //    va_end(args);
-    //}
-
     // Variadic log function with custom warning level
-    inline void log(const char* file, const char* line,int warning_level, const char* format, ...)
+    inline void log(const char* file, int line,int warning_level, const char* format, ...)
     {
         va_list args;
         va_start(args, format);
