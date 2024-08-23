@@ -141,7 +141,7 @@ namespace hlog
             vsnprintf(buffer, sizeof(buffer), format, args);
 
             // Write to file
-            log_file << " (" << get_short_filename(__FILE__).c_str() << " " << __LINE__ << ") " << buffer  << std::endl;
+            log_file << " (" << get_short_filename(file).c_str() << " " << line << ") " << buffer  << std::endl;
         }
 
         vprintf(format, args);
